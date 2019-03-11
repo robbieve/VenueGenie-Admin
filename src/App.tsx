@@ -1,26 +1,51 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
+import DashboardView from './components/views/DashboardView/DashboardView'
+import CreateVenueView from './components/views/CreateVenueView/CreateVenueView'
+import Sidebar from './components/containers/Sidebar/Sidebar'
+
+import {
+  Layout
+} from 'antd';
+
+const { Header, Content, Footer } = Layout;
 
 class App extends Component {
+  state = {
+    collapsed: false,
+  };
+
+  toggle = () => {
+    this.setState({
+      collapsed: !this.state.collapsed,
+    });
+  }
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <Router>
+        <Layout>
+          <Sidebar />
+          <Layout style={{ marginLeft: 200 }}>
+          
+            <Header style={{ background: '#fff', padding: 0 }} />
+
+            <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
+              <Switch>
+                <Route exact path="/dashboard" component={DashboardView} />
+                <Route exact path="/venue/new" component={CreateVenueView} />
+              </Switch>
+            </Content>
+
+            <Footer style={{ textAlign: 'center' }}>
+              Threeaccents ©2019 Created by Threeaccents
+            </Footer>
+
+          </Layout>
+        </Layout>
+      </Router>
     );
   }
 }
