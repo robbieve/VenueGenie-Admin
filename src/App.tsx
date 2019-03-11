@@ -13,16 +13,6 @@ import {
 const { Header, Content, Footer } = Layout;
 
 class App extends Component {
-  state = {
-    collapsed: false,
-  };
-
-  toggle = () => {
-    this.setState({
-      collapsed: !this.state.collapsed,
-    });
-  }
-
   render() {
     return (
       <Router>
