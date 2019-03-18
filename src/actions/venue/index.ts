@@ -4,16 +4,16 @@ import {
   CREATE_VENUE,
 } from '../../constants/actionTypes'
 
-export const fetchOffers = () => ({
+export const fetchVenues = () => ({
   type: FETCH_VENUES,
 });
 
-export const deleteOffer = (id: number) => ({
+export const deleteVenue = (id: number) => ({
   type: DELETE_VENUE,
   id,
 })
 
-export const insertOffer = (offer: object) => ({
+export const insertVenue = (payload: object) => ({
   type: CREATE_VENUE,
-  offer,
+  payload,
 })

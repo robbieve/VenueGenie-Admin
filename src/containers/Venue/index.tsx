@@ -1,8 +1,17 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Venue from '../../screens/Venue'
+import {
+    fetchVenues,
+} from '../../actions/venue'
 
-class VenueContainer extends Component {
+interface Props {
+    fetchVenues: any,
+    venues: any
+}
+
+
+class VenueContainer extends Component<Props> {
     
     render () {
         return (
@@ -13,15 +22,17 @@ class VenueContainer extends Component {
     }
 }
 
-const mapStateToProps = () => {
+const mapStateToProps = (state: any) => {
     return {
-        
+        venues: state.venue.venues,
     };
 };
 
-const mapDispatchToProps = () => {
+const mapDispatchToProps = (dispatch: any) => {
     return {
-        
+        fetchVenues: () => {
+            return dispatch(fetchVenues())
+        }
     };
 }
 

@@ -20,7 +20,7 @@ class App extends Component {
           <Sidebar />
           <Layout style={{ marginLeft: 200 }}>
           
-            <Header style={{ background: '#fff', padding: 0 }} />
+            {/* <Header style={{ background: '#fff', padding: 0 }} /> */}
 
             <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
               <Switch>
@@ -29,9 +29,9 @@ class App extends Component {
               </Switch>
             </Content>
 
-            <Footer style={{ textAlign: 'center' }}>
+            {/* <Footer style={{ textAlign: 'center' }}>
               Threeaccents ©2019 Created by Threeaccents
-            </Footer>
+            </Footer> */}
 
           </Layout>
         </Layout>

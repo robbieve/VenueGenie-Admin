@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const client = axios.create({
-  baseURL: 'http://18.220.22.214:3000/api',
+  baseURL: 'https://staging-api.venuegenie.com',
 });
 
 export const fetchDataService = (url: string, headers: Object) => client.get(
