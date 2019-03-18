@@ -14,7 +14,6 @@ export interface VenueStatsResponse {
     data: VenueStatsModel;
 }
 
-
 export interface CreateVenueRequest {
     listingName: string;
     name: string;

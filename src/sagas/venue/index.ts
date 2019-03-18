@@ -10,7 +10,7 @@ import {
 function* fetchVenues() {
   const state = yield select()
   const response = yield fetchDataService('/venues', state.authentication.header)
-  yield put({ type: VENUES_RECEIVED, payload: response.data, });
+  yield put({ type: VENUES_RECEIVED, payload: response.data.data, });
 }
 
 export function* venueActionWatcher() {
