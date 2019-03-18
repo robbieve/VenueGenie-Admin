@@ -6,6 +6,7 @@ import Sidebar from './components/Sidebar'
 import Dashboard from './containers/Dashboard'
 import Venue from './containers/Venue'
 import CreateEventGallery from './containers/CreateEventGallery';
+import EventGalleries from './containers/EventGalleries';
 
 import {
   Layout
@@ -26,6 +27,7 @@ class App extends Component {
             <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
               <Switch>
                 <Route exact path="/photo-gallery/new" component={CreateEventGallery} />
+                <Route exact path="/photo-galleries" component={EventGalleries} />
                 <Route exact path="/dashboard" component={Dashboard} />
                 <Route exact path="/venue" component={Venue} />
               </Switch>
