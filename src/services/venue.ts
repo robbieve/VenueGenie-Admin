@@ -1,4 +1,4 @@
-import { get, post, put, del } from './base'
+import { get, post, put, del, QueryParam } from './base'
 import { VenueModel, VenueStatsModel, VenueImage, VenueDish, MealPrice, EventType, VenueOptions } from '../models/venue';
 import { apiUrl } from '../config'
 
@@ -14,10 +14,6 @@ export interface VenueStatsResponse {
     data: VenueStatsModel;
 }
 
-export interface QueryParam {
-    key: string;
-    value: string;
-}
 
 export interface CreateVenueRequest {
     listingName: string;
