@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-import DashboardView from './components/views/DashboardView/DashboardView'
-import CreateVenueView from './components/views/CreateVenueView/CreateVenueView'
-import Sidebar from './components/containers/Sidebar/Sidebar'
+import Sidebar from './components/Sidebar'
+import Dashboard from './containers/Dashboard'
+import Venue from './containers/Venue'
 
 import {
   Layout
@@ -24,8 +24,8 @@ class App extends Component {
 
             <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
               <Switch>
-                <Route exact path="/dashboard" component={DashboardView} />
-                <Route exact path="/venue/new" component={CreateVenueView} />
+                <Route exact path="/dashboard" component={Dashboard} />
+                <Route exact path="/venue" component={Venue} />
               </Switch>
             </Content>
 

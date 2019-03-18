@@ -10,7 +10,6 @@ const
     INFO_STEP = 'INFO_STEP',
     AMENITIES_STEP = 'AMENITIES_STEP'
 
-
 const initialInformationState = {
     name: '',
     listingName: '',
@@ -37,7 +36,7 @@ interface State {
     informationState: VenueInformationState;
 }
 
-class CreateVenueView extends Component {
+class CreateVenue extends Component {
     state: State = {
         step: INFO_STEP,
         informationState: initialInformationState,
@@ -81,4 +80,4 @@ class CreateVenueView extends Component {
     }
 }
 
-export default CreateVenueView;
+export default CreateVenue;

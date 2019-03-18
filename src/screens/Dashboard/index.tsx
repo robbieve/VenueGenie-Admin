@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-class DashboardView extends Component {
+class Dashboard extends Component {
     render() {
         return (
             <div><h1>Dashboard!</h1></div>
@@ -8,4 +8,4 @@ class DashboardView extends Component {
     }
 }
 
-export default DashboardView;
+export default Dashboard;
