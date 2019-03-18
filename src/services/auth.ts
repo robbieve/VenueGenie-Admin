@@ -34,7 +34,7 @@ export default {
     const token = localStorage.getItem('token')
     if (!token || token === '') return false
 
-    const decoded = jwtDecode(token)
+    const decoded: any = jwtDecode(token)
     if (decoded.exp < Math.floor(Date.now() / 1000)) return false
 
     return true
@@ -43,7 +43,7 @@ export default {
     const token = localStorage.getItem('token')
     if (!token || token === '') return false
 
-    const decoded = jwtDecode(token)
+    const decoded: any = jwtDecode(token)
 
     return decoded.isAdmin;
   },
