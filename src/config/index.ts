@@ -1,13 +1,13 @@
 const LOCAL_HOSTNAME = "localhost"
 const LOCAL_IP = "192.168"
-const DEV_HOSTNAME = "stagingv2"
+const DEV_HOSTNAME = "staging"
 
 ////////////////////////////////////////
 // BACKEND API //
 ////////////////////////////////////////
 export const apiUrl = (): string => {
     const PROD_URL = 'https://api.venuegenie.com';
-    const DEV_URL = 'https://stagingv2-api.venuegenie.com';
+    const DEV_URL = 'https://staging-api.venuegenie.com';
 
     // DO NOT MODIFY!!! If you need to call the staging api make sure you change it back before pushing to github
     const LOCAL_URL = 'http://localhost:8000';
