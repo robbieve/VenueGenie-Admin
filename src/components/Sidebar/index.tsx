@@ -51,7 +51,11 @@ class Sidebar extends Component {
                                 Create
                             </Link>
                         </Menu.Item>
-                        <Menu.Item key="42">All</Menu.Item>
+                        <Menu.Item key="42">
+                            <Link to="/photo-galleries">
+                                All
+                            </Link>
+                        </Menu.Item>
                     </SubMenu>
                 </Menu>
             </Sider>
