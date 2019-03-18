@@ -1,5 +1,5 @@
 import React, { Component, FormEvent } from "react";
-import { Card, Form, Input, Icon, Button, Row, Col, DatePicker, Upload, Select } from "antd";
+import { Card, Form, Input, Icon, Button, Row, Col, DatePicker, Upload, Select, message } from "antd";
 import moment from "moment";
 import { RcFile } from "antd/lib/upload/interface";
 
@@ -7,6 +7,7 @@ import vibeify from '../../services/vibeify'
 import eventService from "../../services/event-service";
 import { EventServiceModel } from "../../models/event-service";
 import { SelectValue } from "antd/lib/select";
+import eventPhotoGallery from "../../services/event-photo-gallery";
 
 const Dragger = Upload.Dragger;
 const Option = Select.Option;
@@ -18,6 +19,7 @@ interface CreateEventGalleryState {
     imgUrls: string[];
     photographers: EventServiceModel[];
     photographer: string;
+    description: string;
 }
 
 interface CreateEventGalleryProps {
@@ -33,7 +35,8 @@ class CreateEventGallery extends Component<CreateEventGalleryProps, CreateEventG
         location: '',
         imgUrls: [],
         photographers: [],
-        photographer: ''
+        photographer: '',
+        description: '',
     }
 
     componentWillMount() {
@@ -46,7 +49,32 @@ class CreateEventGallery extends Component<CreateEventGalleryProps, CreateEventG
 
     private handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        const { title, date, location, imgUrls } = this.state
+        const { title, date, location, imgUrls, description, photographer } = this.state
+        eventPhotoGallery.create({
+            title,
+            location,
+            imgUrls,
+            description,
+            photographerId: photographer,
+            date: moment(date).unix().toString(),
+        }).then(_ => {
+            message.success('Photo gallery was created!');
+            this.clearForm();
+            window.scrollTo(0, 0);
+        }).catch(err => {
+            message.error(err.error);
+        })
+    }
+
+    private clearForm() {
+        this.setState({
+            title: '',
+            date: moment().format(dateFormat),
+            location: '',
+            imgUrls: [],
+            photographer: '',
+            description: '',
+        })
     }
 
     private onDateChange = (_: any, date: string) => {
@@ -75,7 +103,7 @@ class CreateEventGallery extends Component<CreateEventGalleryProps, CreateEventG
     }
 
     render() {
-        const { title, date, location } = this.state
+        const { title, date, location, description } = this.state
         return (
             <Row>
                 <Col xl={{ span: 12 }} lg={{ span: 14 }} md={{ span: 16 }} sm={{ span: 24 }}>
@@ -107,6 +135,12 @@ class CreateEventGallery extends Component<CreateEventGalleryProps, CreateEventG
                                 <Select onChange={this.handlePhotographerChange}>
                                     {this.photographerOptions()}
                                 </Select>
+                            </Form.Item>
+                            <Form.Item label="Description">
+                                <Input.TextArea
+                                    value={description}
+                                    onInput={(e: any) => this.setState({ description: e.target.value })}
+                                    placeholder="Description" />
                             </Form.Item>
                             <Form.Item label="Event Images">
                                 <Dragger
