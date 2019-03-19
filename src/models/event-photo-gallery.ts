@@ -6,6 +6,10 @@ export interface EventPhotoGalleryModel {
     location: string;
     imgUrls: string[];
     photographer: EventServiceModel;
+    photographerId?: string;
     date: string;
     description: string;
+    password: string;
+    passwordProtected: boolean;
+    coverImg: string;
 }

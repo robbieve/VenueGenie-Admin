@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { EventPhotoGalleryModel } from '../../models/event-photo-gallery'
 import { Spin, Empty, Table, message, Card } from 'antd'
 import eventPhotoGallery from '../../services/event-photo-gallery'
+import { History } from "history";
+import moment from "moment";
 
 interface GalleryDataSource {
     key: string;
@@ -9,6 +11,7 @@ interface GalleryDataSource {
     photographer: string;
     location: string;
     date: string;
+    passwordProtected: string;
 }
 
 interface EventGalleriesState {
@@ -17,7 +20,7 @@ interface EventGalleriesState {
 }
 
 interface EventGalleriesProps {
-
+    history: History;
 }
 
 const columns = [
@@ -35,6 +38,11 @@ const columns = [
         title: 'Location',
         dataIndex: 'location',
         key: 'location',
+    },
+    {
+        title: 'Password Protected',
+        dataIndex: 'passwordProtected',
+        key: 'passwordProtected',
     },
     {
         title: 'Date',
@@ -57,8 +65,9 @@ class EventGalleries extends Component<EventGalleriesProps, EventGalleriesState>
                     key: item.id,
                     title: item.title,
                     location: item.location,
-                    date: item.date,
+                    date: moment(item.date).format('MM/DD/YYYY'),
                     photographer: item.photographer ? item.photographer.stageName : 'None',
+                    passwordProtected: item.passwordProtected ? 'Yes' : 'No'
                 }
             })
             this.setState({ galleriesDataSource: dataSource })
@@ -67,6 +76,10 @@ class EventGalleries extends Component<EventGalleriesProps, EventGalleriesState>
         }).finally(() => {
             this.setState({ fetchingGalleries: false })
         })
+    }
+
+    handleRowClick(record: GalleryDataSource) {
+        this.props.history.push(`/event-gallery/${record.key}`)
     }
 
     render() {
@@ -83,7 +96,14 @@ class EventGalleries extends Component<EventGalleriesProps, EventGalleriesState>
         }
         return (
             <Card>
-                <Table dataSource={galleriesDataSource} columns={columns} />
+                <Table 
+                    dataSource={galleriesDataSource} 
+                    columns={columns}
+                    onRow={(record) => {
+                        return {
+                          onClick: () => this.handleRowClick(record),
+                        };
+                      }} />
             </Card>
         )
     }

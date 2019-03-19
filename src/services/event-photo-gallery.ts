@@ -1,4 +1,4 @@
-import { post, get } from './base'
+import { post, get, put, del } from './base'
 import { apiUrl } from '../config'
 import {EventPhotoGalleryModel} from '../models/event-photo-gallery'
 
@@ -9,6 +9,22 @@ export interface CreateEventPhotoGalleryRequest {
     photographerId: string;
     date: string;
     description: string;
+    coverImg: string;
+    password: string;
+    passwordProtected: boolean;
+}
+
+export interface UpdateEventPhotoGalleryRequest {
+    id: string;
+    title: string;
+    location: string;
+    imgUrls: string[];
+    photographerId: string;
+    date: string;
+    description: string;
+    coverImg: string;
+    password: string;
+    passwordProtected: boolean;
 }
 
 export interface EventPhotoGalleryResponse {
@@ -25,5 +41,14 @@ export default {
     },
     list(): Promise<EventPhotoGalleriesResponse> {
         return get(`${apiUrl()}/event-photo-galleries`);
+    },
+    get(id: string): Promise<EventPhotoGalleryResponse> {
+        return get(`${apiUrl()}/event-photo-galleries/${id}`);
+    },
+    update(req: UpdateEventPhotoGalleryRequest): Promise<EventPhotoGalleryResponse> {
+        return put(`${apiUrl()}/event-photo-galleries/${req.id}`, req);
+    },
+    delete(id: string): Promise<any> {
+        return del(`${apiUrl()}/event-photo-galleries/${id}`);
     }
 }

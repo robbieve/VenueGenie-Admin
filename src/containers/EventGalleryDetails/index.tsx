@@ -1,18 +1,20 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import EventGalleries from '../../screens/EventGalleries'
+import EventGalleryDetails from '../../screens/EventGalleryDetails'
+import { match } from 'react-router';
 import { History } from 'history';
 
-interface EventGalleriesContainerProps {
-    history: History
+interface EventGalleryDetailsProps {
+    match: match<any>;
+    history: History;
 }
 
-class EventGalleriesContainer extends Component<EventGalleriesContainerProps> {
+class EventGalleryDetailsContainer extends Component<EventGalleryDetailsProps> {
     
     render () {
         return (
             <div>
-              <EventGalleries {...this.props}/>
+              <EventGalleryDetails {...this.props}/>
             </div>
         )
     }
@@ -33,4 +35,4 @@ const mapDispatchToProps = () => {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(EventGalleriesContainer);
+)(EventGalleryDetailsContainer);

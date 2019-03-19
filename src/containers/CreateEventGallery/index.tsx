@@ -1,8 +1,13 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import CreateEventGallery from '../../screens/CreateEventGallery'
+import { History } from 'history';
 
-class CreateEventGalleryContainer extends Component {
+interface CreateEventGalleryContainer {
+    history: History;
+}
+
+class CreateEventGalleryContainer extends Component<CreateEventGalleryContainer> {
     
     render () {
         return (

@@ -12,6 +12,13 @@ export default {
         return fetch(url, {
             method: 'POST',
             body: data
-        }).then(resp => resp.json());
+        })
+            .then(resp => resp.json())
+            .then(payload => {
+                if (payload.error) {
+                    return Promise.reject(payload)
+                }
+                return Promise.resolve(payload)
+            });
     }
 }

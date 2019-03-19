@@ -1,13 +1,16 @@
 import React, { Component, FormEvent } from "react";
-import { Card, Form, Input, Icon, Button, Row, Col, DatePicker, Upload, Select, message } from "antd";
+import { Card, Form, Input, Icon, Button, Row, Col, DatePicker, Upload, Select, message, Checkbox } from "antd";
 import moment from "moment";
-import { RcFile } from "antd/lib/upload/interface";
+import { RcFile, UploadFile, UploadChangeParam } from "antd/lib/upload/interface";
 
 import vibeify from '../../services/vibeify'
 import eventService from "../../services/event-service";
 import { EventServiceModel } from "../../models/event-service";
 import { SelectValue } from "antd/lib/select";
 import eventPhotoGallery from "../../services/event-photo-gallery";
+import { CheckboxChangeEvent } from "antd/lib/checkbox";
+import { History } from "history";
+import {makeId} from '../../util'
 
 const Dragger = Upload.Dragger;
 const Option = Select.Option;
@@ -16,27 +19,39 @@ interface CreateEventGalleryState {
     title: string;
     date: string;
     location: string;
-    imgUrls: string[];
+    images: {
+        url: string,
+        uid: string
+    }[];
     photographers: EventServiceModel[];
     photographer: string;
     description: string;
+    passwordProtect: boolean;
+    password: string;
+    coverImage: UploadFile | undefined;
+    uniqueId: string;
 }
 
 interface CreateEventGalleryProps {
-
+    history: History;
 }
 
 const dateFormat = 'YYYY-MM-DD';
+
 
 class CreateEventGallery extends Component<CreateEventGalleryProps, CreateEventGalleryState> {
     state: CreateEventGalleryState = {
         title: '',
         date: moment().format(dateFormat),
         location: '',
-        imgUrls: [],
+        images: [],
         photographers: [],
         photographer: '',
         description: '',
+        passwordProtect: false,
+        password: '',
+        coverImage: undefined,
+        uniqueId: makeId(10),
     }
 
     componentWillMount() {
@@ -49,18 +64,21 @@ class CreateEventGallery extends Component<CreateEventGalleryProps, CreateEventG
 
     private handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        const { title, date, location, imgUrls, description, photographer } = this.state
+        const { title, date, location, images, description, photographer, coverImage, password, passwordProtect } = this.state
         eventPhotoGallery.create({
             title,
             location,
-            imgUrls,
+            imgUrls: images.map(i => i.url),
             description,
             photographerId: photographer,
+            password,
+            passwordProtected: passwordProtect,
+            coverImg: coverImage!.url!,
             date: moment(date).unix().toString(),
         }).then(_ => {
             message.success('Photo gallery was created!');
-            this.clearForm();
-            window.scrollTo(0, 0);
+            this.clearForm()
+            window.scrollTo(0,0)
         }).catch(err => {
             message.error(err.error);
         })
@@ -69,11 +87,15 @@ class CreateEventGallery extends Component<CreateEventGalleryProps, CreateEventG
     private clearForm() {
         this.setState({
             title: '',
+            uniqueId: makeId(10), // this will "reset" the component
             date: moment().format(dateFormat),
             location: '',
-            imgUrls: [],
+            images: [],
             photographer: '',
             description: '',
+            passwordProtect: false,
+            password: '',
+            coverImage: undefined,
         })
     }
 
@@ -87,25 +109,54 @@ class CreateEventGallery extends Component<CreateEventGalleryProps, CreateEventG
         });
     }
 
-    private beforeUpload = (file: RcFile, _: RcFile[]) => {
+    private uploadRequest = ({ file, onSuccess, onError }: any) => {
         vibeify.upload(file).then(resp => {
-            this.setState({
-                imgUrls: [...this.state.imgUrls, resp.data.url]
-            })
+            onSuccess(resp, file)
+        }).catch(err => {
+            onError(err, file)
         })
-        return false
-    }
+    };
 
     private photographerOptions() {
         return this.state.photographers.map(photographer => (
-            <Option value={photographer.id}>{photographer.stageName}</Option>
+            <Option key={photographer.id} value={photographer.id}>{photographer.stageName}</Option>
         ))
     }
 
+    private onPreviewClick = (file: UploadFile) => {
+        const selectedFile = this.state.images.find(f => f.uid === file.uid)
+        file.url = selectedFile!.url
+        this.setState({
+            coverImage: file
+        })
+    }
+
+    private uploadOnChange = (info: UploadChangeParam) => {
+        if (info.file.status === 'done') {
+            if (this.state.images.length === 0) {
+                info.file.url = info.file.response.data.url
+                this.setState({
+                    images: [...this.state.images, {
+                        url: info.file.response.data.url,
+                        uid: info.file.uid
+                    }],
+                    coverImage: info.file
+                })
+                return
+            }
+            this.setState({
+                images: [...this.state.images, {
+                    url: info.file.response.data.url,
+                    uid: info.file.uid
+                }]
+            })
+        }
+    }
+
     render() {
-        const { title, date, location, description } = this.state
+        const { uniqueId, title, date, location, description, passwordProtect, password, images, coverImage } = this.state
         return (
-            <Row>
+            <Row key={uniqueId}>
                 <Col xl={{ span: 12 }} lg={{ span: 14 }} md={{ span: 16 }} sm={{ span: 24 }}>
                     <h1>Create Event Photo Gallery</h1>
                     <p>Banjo narwhal health goth shoreditch shaman skateboard vaporware coloring book.</p>
@@ -144,14 +195,42 @@ class CreateEventGallery extends Component<CreateEventGalleryProps, CreateEventG
                             </Form.Item>
                             <Form.Item label="Event Images">
                                 <Dragger
-                                    beforeUpload={this.beforeUpload}>
+                                    customRequest={this.uploadRequest}
+                                    onPreview={this.onPreviewClick}
+                                    multiple={true}
+                                    listType="picture"
+                                    onChange={this.uploadOnChange}>
                                     <p className="ant-upload-drag-icon">
                                         <Icon type="inbox" />
                                     </p>
                                     <p className="ant-upload-text">Click or drag file to this area to upload</p>
                                     <p className="ant-upload-hint">Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files</p>
                                 </Dragger>
+                                {images.length > 0 ?
+                                    <Row style={{ marginTop: 16 }}>
+                                        <h4>Cover Image</h4>
+                                        <Upload
+                                            listType="picture"
+                                            fileList={[coverImage!]} />
+                                    </Row>
+                                    : null}
                             </Form.Item>
+                            <Form.Item>
+                                <Checkbox
+                                    value={passwordProtect}
+                                    defaultChecked={passwordProtect}
+                                    onChange={(e: CheckboxChangeEvent) => this.setState({ passwordProtect: e.target.checked })}>Password protect?</Checkbox>
+                            </Form.Item>
+                            {passwordProtect ?
+                                <Form.Item label="Password">
+                                    <Input
+                                        type="password"
+                                        value={password}
+                                        onInput={(e: any) => this.setState({ password: e.target.value })}
+                                        prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                                        placeholder="Password" />
+                                </Form.Item>
+                                : null}
                             <Form.Item>
                                 <Button type="primary" htmlType="submit">
                                     Create

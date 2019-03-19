@@ -44,15 +44,15 @@ class Sidebar extends Component {
                     </SubMenu>
                     <SubMenu
                         key="5"
-                        title={<span><Icon type="user" /><span>Photo Gallery</span></span>}
+                        title={<span><Icon type="calendar" /><span>Event Gallery</span></span>}
                     >
                         <Menu.Item key="41">
-                            <Link to="/photo-gallery/new">
+                            <Link to="/event-gallery/new">
                                 Create
                             </Link>
                         </Menu.Item>
                         <Menu.Item key="42">
-                            <Link to="/photo-galleries">
+                            <Link to="/event-galleries">
                                 All
                             </Link>
                         </Menu.Item>
