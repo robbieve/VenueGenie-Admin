@@ -210,6 +210,7 @@ class CreateEventGallery extends Component<CreateEventGalleryProps, CreateEventG
                                     <Row style={{ marginTop: 16 }}>
                                         <h4>Cover Image</h4>
                                         <Upload
+                                            showUploadList={{showRemoveIcon: false}}
                                             listType="picture"
                                             fileList={[coverImage!]} />
                                     </Row>

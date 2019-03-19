@@ -231,6 +231,7 @@ class EventGalleryDetails extends Component<EventGalleryDetailsProps, EventGalle
                                     <Row style={{ marginTop: 16 }}>
                                         <h4>Cover Image</h4>
                                         <Upload
+                                            showUploadList={{showRemoveIcon: false}}
                                             listType="picture"
                                             fileList={[coverImg!]} />
                                     </Row>
