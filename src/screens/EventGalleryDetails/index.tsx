@@ -245,7 +245,6 @@ class EventGalleryDetails extends Component<EventGalleryDetailsProps, EventGalle
                             {gallery.passwordProtected ?
                                 <Form.Item label="Update Password (password not shown for security reasons)">
                                     <Input
-                                        type="password"
                                         value={gallery.password}
                                         onInput={(e: any) => this.updateGalleryState('password', e.target.value)}
                                         prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}

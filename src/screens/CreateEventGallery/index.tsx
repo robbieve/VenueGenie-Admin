@@ -224,7 +224,6 @@ class CreateEventGallery extends Component<CreateEventGalleryProps, CreateEventG
                             {passwordProtect ?
                                 <Form.Item label="Password">
                                     <Input
-                                        type="password"
                                         value={password}
                                         onInput={(e: any) => this.setState({ password: e.target.value })}
                                         prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
