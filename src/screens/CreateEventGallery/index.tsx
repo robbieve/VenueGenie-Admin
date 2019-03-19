@@ -30,6 +30,8 @@ interface CreateEventGalleryState {
     password: string;
     coverImage: UploadFile | undefined;
     uniqueId: string;
+    featured: boolean;
+    eventType: string;
 }
 
 interface CreateEventGalleryProps {
@@ -52,6 +54,8 @@ class CreateEventGallery extends Component<CreateEventGalleryProps, CreateEventG
         password: '',
         coverImage: undefined,
         uniqueId: makeId(10),
+        featured: false,
+        eventType: ''
     }
 
     componentWillMount() {
@@ -64,7 +68,7 @@ class CreateEventGallery extends Component<CreateEventGalleryProps, CreateEventG
 
     private handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        const { title, date, location, images, description, photographer, coverImage, password, passwordProtect } = this.state
+        const { title, date, location, images, description, photographer, coverImage, password, passwordProtect, featured, eventType } = this.state
         eventPhotoGallery.create({
             title,
             location,
@@ -75,6 +79,8 @@ class CreateEventGallery extends Component<CreateEventGalleryProps, CreateEventG
             passwordProtected: passwordProtect,
             coverImg: coverImage!.url!,
             date: moment(date).unix().toString(),
+            featured,
+            eventType
         }).then(_ => {
             message.success('Photo gallery was created!');
             this.clearForm()
@@ -96,17 +102,13 @@ class CreateEventGallery extends Component<CreateEventGalleryProps, CreateEventG
             passwordProtect: false,
             password: '',
             coverImage: undefined,
+            featured: false,
+            eventType: ''
         })
     }
 
     private onDateChange = (_: any, date: string) => {
         this.setState({ date })
-    }
-
-    private handlePhotographerChange = (value: SelectValue) => {
-        this.setState({
-            photographer: value as string,
-        });
     }
 
     private uploadRequest = ({ file, onSuccess, onError }: any) => {
@@ -123,12 +125,24 @@ class CreateEventGallery extends Component<CreateEventGalleryProps, CreateEventG
         ))
     }
 
+    private handlePhotographerChange = (value: SelectValue) => {
+        this.setState({
+            photographer: value as string,
+        });
+    }
+
     private onPreviewClick = (file: UploadFile) => {
         const selectedFile = this.state.images.find(f => f.uid === file.uid)
         file.url = selectedFile!.url
         this.setState({
             coverImage: file
         })
+    }
+
+    private handleEventTypeChange = (value: SelectValue) => {
+        this.setState({
+            eventType: value as string,
+        });
     }
 
     private uploadOnChange = (info: UploadChangeParam) => {
@@ -154,7 +168,7 @@ class CreateEventGallery extends Component<CreateEventGalleryProps, CreateEventG
     }
 
     render() {
-        const { uniqueId, title, date, location, description, passwordProtect, password, images, coverImage } = this.state
+        const { uniqueId, title, date, location, description, passwordProtect, password, images, coverImage, featured, eventType } = this.state
         return (
             <Row key={uniqueId}>
                 <Col xl={{ span: 12 }} lg={{ span: 14 }} md={{ span: 16 }} sm={{ span: 24 }}>
@@ -168,6 +182,12 @@ class CreateEventGallery extends Component<CreateEventGalleryProps, CreateEventG
                                     onInput={(e: any) => this.setState({ title: e.target.value })}
                                     prefix={<Icon type="branches" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                     placeholder="Title" />
+                            </Form.Item>
+                            <Form.Item>
+                                <Checkbox
+                                    value={featured}
+                                    defaultChecked={featured}
+                                    onChange={(e: CheckboxChangeEvent) => this.setState({ featured: e.target.checked })}>Featured (will show in home page)</Checkbox>
                             </Form.Item>
                             <Form.Item label="Location">
                                 <Input
@@ -185,6 +205,13 @@ class CreateEventGallery extends Component<CreateEventGalleryProps, CreateEventG
                             <Form.Item label="Photographer">
                                 <Select onChange={this.handlePhotographerChange}>
                                     {this.photographerOptions()}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item label="Event Type">
+                                <Select onChange={this.handleEventTypeChange}>
+                                    <Option value="social">Social</Option>
+                                    <Option value="wedding">Wedding</Option>
+                                    <Option value="corporate">Corporate</Option>
                                 </Select>
                             </Form.Item>
                             <Form.Item label="Description">
