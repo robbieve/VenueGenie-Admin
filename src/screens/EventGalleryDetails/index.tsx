@@ -43,7 +43,7 @@ class EventGalleryDetails extends Component<EventGalleryDetailsProps, EventGalle
         this.setState({ fetchingGallery: true })
         // clean up promises to own functions
         eventPhotoGallery.get(this.props.match.params.id).then(resp => {
-            resp.data.photographerId = resp.data.photographer.id
+            resp.data.photographerId = resp.data.photographer ? resp.data.photographer.id : ''
             this.setState({
                 gallery: resp.data,
                 images: this.convertImagesToUploadFiles(resp.data.imgUrls),
@@ -55,6 +55,7 @@ class EventGalleryDetails extends Component<EventGalleryDetailsProps, EventGalle
                 })
             })
         }).catch(err => {
+            console.log({err})
             message.error(err.error)
         }).finally(() => this.setState({ fetchingGallery: false }))
     }
@@ -201,7 +202,7 @@ class EventGalleryDetails extends Component<EventGalleryDetailsProps, EventGalle
                             </Form.Item>
                             <Form.Item label="Photographer">
                                 <Select
-                                    defaultValue={gallery.photographer.id}
+                                    defaultValue={gallery.photographerId}
                                     onChange={this.handlePhotographerChange}>
                                     {this.photographerOptions()}
                                 </Select>

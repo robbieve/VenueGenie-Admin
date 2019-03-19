@@ -18,12 +18,12 @@ class Sidebar extends Component {
                         <span>Dashboard</span>
                     </Menu.Item>
                     <Menu.Item key="02">
-                        <Icon type="dashboard" />
+                        <Icon type="schedule" />
                         <span>Reservations</span>
                     </Menu.Item>
                     <SubMenu
                         key="1"
-                        title={<span><Icon type="user" /><span>Venues</span></span>}
+                        title={<span><Icon type="bank" /><span>Venues</span></span>}
                     >
                         <Menu.Item key="11">Create</Menu.Item>
                         <Menu.Item key="12">All</Menu.Item>
