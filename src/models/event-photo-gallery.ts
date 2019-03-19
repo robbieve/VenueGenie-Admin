@@ -12,4 +12,6 @@ export interface EventPhotoGalleryModel {
     password: string;
     passwordProtected: boolean;
     coverImg: string;
+    featured: boolean;
+    eventType: string;
 }

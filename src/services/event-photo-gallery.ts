@@ -12,6 +12,8 @@ export interface CreateEventPhotoGalleryRequest {
     coverImg: string;
     password: string;
     passwordProtected: boolean;
+    featured: boolean;
+    eventType: string;
 }
 
 export interface UpdateEventPhotoGalleryRequest {
@@ -25,6 +27,8 @@ export interface UpdateEventPhotoGalleryRequest {
     coverImg: string;
     password: string;
     passwordProtected: boolean;
+    featured: boolean;
+    eventType: string;
 }
 
 export interface EventPhotoGalleryResponse {

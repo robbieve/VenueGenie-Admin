@@ -98,6 +98,8 @@ class EventGalleryDetails extends Component<EventGalleryDetailsProps, EventGalle
             location: gallery!.location,
             date: moment(gallery!.date).unix().toString(),
             photographerId: gallery!.photographerId!,
+            featured: gallery!.featured,
+            eventType: gallery!.eventType,
         }).then(() => {
             message.success('Event gallery was updated!');
             this.props.history.push('/event-galleries');
@@ -136,6 +138,10 @@ class EventGalleryDetails extends Component<EventGalleryDetailsProps, EventGalle
 
     private handlePhotographerChange = (value: SelectValue) => {
         this.updateGalleryState('photographerId', value as string);
+    }
+
+    private handleEventTypeChange = (value: SelectValue) => {
+        this.updateGalleryState('eventType', value as string);
     }
 
     private uploadRequest = ({ file, onSuccess, onError }: any) => {
@@ -187,6 +193,12 @@ class EventGalleryDetails extends Component<EventGalleryDetailsProps, EventGalle
                                     prefix={<Icon type="branches" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                     placeholder="Title" />
                             </Form.Item>
+                            <Form.Item>
+                                <Checkbox
+                                    value={gallery.featured}
+                                    defaultChecked={gallery.featured}
+                                    onChange={(e: CheckboxChangeEvent) => this.updateGalleryState('featured', e.target.checked)}>Featured (will show in home page)</Checkbox>
+                            </Form.Item>
                             <Form.Item label="Location">
                                 <Input
                                     value={gallery.location}
@@ -205,6 +217,15 @@ class EventGalleryDetails extends Component<EventGalleryDetailsProps, EventGalle
                                     defaultValue={gallery.photographerId}
                                     onChange={this.handlePhotographerChange}>
                                     {this.photographerOptions()}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item label="Event Type">
+                                <Select 
+                                    defaultValue={gallery.eventType}
+                                    onChange={this.handleEventTypeChange}>
+                                    <Select.Option value="social">Social</Select.Option>
+                                    <Select.Option value="wedding">Wedding</Select.Option>
+                                    <Select.Option value="corporate">Corporate</Select.Option>
                                 </Select>
                             </Form.Item>
                             <Form.Item label="Description">
