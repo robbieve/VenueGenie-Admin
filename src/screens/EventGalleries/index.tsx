@@ -89,11 +89,6 @@ class EventGalleries extends Component<EventGalleriesProps, EventGalleriesState>
                 <Spin size="large" />
             )
         }
-        if (galleriesDataSource.length === 0) {
-            return (
-                <Empty />
-            )
-        }
         return (
             <Card>
                 <Table 
