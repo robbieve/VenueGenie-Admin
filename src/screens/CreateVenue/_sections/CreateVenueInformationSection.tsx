@@ -2,7 +2,7 @@ import React, { Component, FormEvent } from 'react';
 import { Form, Input, Select, Divider, Button, Alert, InputNumber } from 'antd';
 
 import { VenueInformationState } from '../interface'
-import {venueTypeOptions} from '../../../data/select'
+import {venueTypeOptions, cityOptions} from '../../../data/select'
 
 import PlacesAutocomplete from 'react-places-autocomplete';
 
@@ -112,7 +112,7 @@ class CreateVenueInformationSection extends Component<Props> {
                 <Form.Item label="Commission">
                     <InputNumber
                         value={data.commission}
-                        onInput={(e: any) => updateState('commission', e.target.value)} />
+                        onChange={(value: any) => updateState('commission', value)} />
                 </Form.Item>
                 <Form.Item label="Email">
                     <Input
@@ -145,12 +145,12 @@ class CreateVenueInformationSection extends Component<Props> {
                 <Form.Item label="Google Review Qty">
                     <InputNumber
                         value={data.googleReviewQty}
-                        onInput={(e: any) => updateState('googleReviewQty', e.target.value)} />
+                        onChange={(value: any) => updateState('googleReviewQty', value)} />
                 </Form.Item>
                 <Form.Item label="Google Review Rating">
                     <InputNumber
                         value={data.googleReviewRating}
-                        onInput={(e: any) => updateState('googleReviewRating', e.target.value)} />
+                        onChange={(value: any) => updateState('googleReviewRating', value)} />
                 </Form.Item>
                 <Divider />
                 <h3>Location</h3>
@@ -195,7 +195,14 @@ class CreateVenueInformationSection extends Component<Props> {
                     </PlacesAutocomplete>
                 </Form.Item>
                 <Form.Item label="City">
-                    <Select >
+                    <Select
+                        showSearch
+                        placeholder="Select a City"
+                        optionFilterProp="children"
+                    >
+                        {cityOptions.map(opt => (
+                            <Select.Option value={opt.value}>{opt.label}</Select.Option>
+                        ))}
                     </Select>
                 </Form.Item>
                 {this.state.errors.map(err => (

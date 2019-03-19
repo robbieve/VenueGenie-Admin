@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Row, Col, Steps, Divider } from 'antd';
 
 import CreateVenueInformationSection from './_sections/CreateVenueInformationSection'
+import AddAmenitySection from './_sections/AddAmenitySection'
 import { VenueInformationState } from './interface';
 
 const Step = Steps.Step;
@@ -38,8 +39,9 @@ interface State {
 
 class CreateVenue extends Component {
     state: State = {
-        step: INFO_STEP,
+        step: AMENITIES_STEP,
         informationState: initialInformationState,
+       
     }
 
     updateInfoState = (key: string, value: string | number) => {
@@ -56,9 +58,15 @@ class CreateVenue extends Component {
                     <CreateVenueInformationSection
                         data={this.state.informationState}
                         updateState={this.updateInfoState}
-                        next={() => this.setState({step: 2})} />
+                        next={() => this.setState({step: AMENITIES_STEP})} />
                 )
             case AMENITIES_STEP:
+                return (
+                    <AddAmenitySection 
+                        updateState={this.updateInfoState}
+                        next={() => this.setState({step: AMENITIES_STEP})}
+                    />
+                )
         }
     }
 
@@ -72,7 +80,7 @@ class CreateVenue extends Component {
                         <Step title="Waiting" description="This is a description." />
                     </Steps>
                 </Col>
-                <Col span="13" style={{ background: 'white', padding: 16 }}>
+                <Col span={this.state.step === INFO_STEP? "13" : "8"} style={{ background: 'white', padding: 16 }}>
                     {this.displaySteps()}
                 </Col>
             </Row>
