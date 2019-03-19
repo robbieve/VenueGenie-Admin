@@ -23,7 +23,7 @@ class App extends Component {
           <Sidebar />
           <Layout style={{ marginLeft: 200 }}>
             <Header style={{ background: '#fff', padding: 0 }} />
-            <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
+            <Content style={{ margin: '24px 16px 0', overflow: 'initial', minHeight: 'calc(100vh - 60px)' }}>
               <Switch>
                 <Route exact path="/event-gallery/new" component={CreateEventGallery} />
                 <Route exact path="/event-galleries" component={EventGalleries} />
