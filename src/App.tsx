@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Sidebar from './components/Sidebar'
 import Dashboard from './containers/Dashboard'
 import Venue from './containers/Venue'
+import CreateVenue from './containers/CreateVenue'
 import CreateEventGallery from './containers/CreateEventGallery';
 import EventGalleries from './containers/EventGalleries';
 import EventGalleryDetails from './containers/EventGalleryDetails';
@@ -30,6 +31,7 @@ class App extends Component {
                 <Route exact path="/event-gallery/:id" component={EventGalleryDetails} />
                 <Route exact path="/dashboard" component={Dashboard} />
                 <Route exact path="/venue" component={Venue} />
+                <Route exact path="/venue/new" component={CreateVenue} />
               </Switch>
             </Content>
             <Footer style={{ textAlign: 'center' }}>

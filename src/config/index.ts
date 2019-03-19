@@ -10,7 +10,7 @@ export const apiUrl = (): string => {
     const DEV_URL = 'https://staging-api.venuegenie.com';
 
     // DO NOT MODIFY!!! If you need to call the staging api make sure you change it back before pushing to github
-    const LOCAL_URL = 'http://localhost:8000';
+    const LOCAL_URL = 'https://staging-api.venuegenie.com';// 'http://localhost:8000';
 
     if (window.location.hostname.includes(LOCAL_HOSTNAME)) {
         return LOCAL_URL

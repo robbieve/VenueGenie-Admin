@@ -1,19 +1,18 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import Venue from '../../screens/Venue'
-
+import CreateVenue from '../../screens/CreateVenue'
 
 interface Props {
     
 }
 
 
-class VenueContainer extends Component<Props> {
+class CreateVenueContainer extends Component<Props> {
     
     render () {
         return (
             <div>
-              <Venue {...this.props}/>
+              <CreateVenue {...this.props}/>
             </div>
         )
     }
@@ -21,17 +20,17 @@ class VenueContainer extends Component<Props> {
 
 const mapStateToProps = (state: any) => {
     return {
-        
+      
     };
 };
 
 const mapDispatchToProps = (dispatch: any) => {
     return {
-        
+       
     };
 }
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(VenueContainer);
+)(CreateVenueContainer);

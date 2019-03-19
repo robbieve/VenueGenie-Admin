@@ -2,7 +2,7 @@ import React, { Component, FormEvent } from 'react';
 import { Form, Input, Select, Divider, Button, Alert, InputNumber } from 'antd';
 
 import { VenueInformationState } from '../interface'
-import {venueTypeOptions} from '../../../../data/select'
+import {venueTypeOptions} from '../../../data/select'
 
 import PlacesAutocomplete from 'react-places-autocomplete';
 

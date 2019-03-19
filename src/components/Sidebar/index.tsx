@@ -25,22 +25,42 @@ class Sidebar extends Component {
                         key="1"
                         title={<span><Icon type="bank" /><span>Venues</span></span>}
                     >
-                        <Menu.Item key="11">Create</Menu.Item>
-                        <Menu.Item key="12">All</Menu.Item>
+                        <Menu.Item key="11"> 
+                            <Link to="/venue/new">
+                                Create
+                            </Link>
+                        </Menu.Item>
+                        <Menu.Item key="12">
+                            <Link to="/venue">
+                                All
+                            </Link>
+                        </Menu.Item>
                     </SubMenu>
                     <SubMenu
                         key="2"
                         title={<span><Icon type="user" /><span>Event Services</span></span>}
                     >
-                        <Menu.Item key="21">Create</Menu.Item>
+                        <Menu.Item key="21"> 
+                            <Link to="/new">
+                                Create
+                            </Link>
+                        </Menu.Item>
                         <Menu.Item key="22">All</Menu.Item>
                     </SubMenu>
                     <SubMenu
                         key="3"
                         title={<span><Icon type="user" /><span>Event Service Types</span></span>}
                     >
-                        <Menu.Item key="31">Create</Menu.Item>
-                        <Menu.Item key="32">All</Menu.Item>
+                        <Menu.Item key="31"> 
+                            <Link to="/event-gallery/new">
+                                Create
+                            </Link>
+                        </Menu.Item>
+                        <Menu.Item key="32">
+                            <Link to="/event-galleries">
+                                All
+                            </Link>
+                        </Menu.Item>
                     </SubMenu>
                     <SubMenu
                         key="5"
