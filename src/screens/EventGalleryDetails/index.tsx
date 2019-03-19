@@ -182,7 +182,7 @@ class EventGalleryDetails extends Component<EventGalleryDetailsProps, EventGalle
         return (
             <Row>
                 <Col xl={{ span: 12 }} lg={{ span: 14 }} md={{ span: 16 }} sm={{ span: 24 }}>
-                    <h1>Create Event Photo Gallery</h1>
+                    <h1>Update Event Photo Gallery</h1>
                     <p>Banjo narwhal health goth shoreditch shaman skateboard vaporware coloring book.</p>
                     <Card>
                         <Form onSubmit={this.handleSubmit} className="login-form">
