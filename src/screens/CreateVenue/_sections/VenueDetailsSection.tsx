@@ -1,5 +1,6 @@
 import React, { Component, FormEvent } from 'react';
 import Dropzone from 'react-dropzone'
+import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { Form, Input, Select, Divider, Button, Alert, InputNumber, Row, Col, Switch, Icon, Upload, message } from 'antd';
 import { VenueOptionItem, VenueOptions, MealPrice } from '../../../models/venue'
 import { VenueInformationState } from '../interface'
@@ -29,6 +30,8 @@ interface State {
   foodDrinkOptionDummies: InputDataSource[],
   foodDrinkOptions: String[],
   addingFoodDrinkOption: AddingInput,
+
+  errors: string[];
 }
 type StateKeys = keyof State;
 type VenueOptionKeys = keyof VenueOptions
@@ -39,7 +42,7 @@ interface Props {
   prev: Function;
 }
 
-class VenueDetailsSection extends Component<Props> {
+class VenueDetailsSection extends Component<Props & RouteComponentProps> {
   state: State = {
     lookFeelDummies: [
       
@@ -71,13 +74,40 @@ class VenueDetailsSection extends Component<Props> {
       name: '',
       type: ''
     },
+    errors: []
   }
+
   private handleSubmit = (e: FormEvent) => {
-    const { data } = this.props
+    const { data, history } = this.props
     e.preventDefault()
-    venue.create(data).then( resp => {
-      console.log("------------", resp)
-    })
+    
+    this.validate()
+      .then(() => {
+        venue.create(data).then( resp => {
+          if(resp) {
+            history.push('/venue')
+          }
+        })
+      })
+      .catch(errors => {
+          this.setState({ errors })
+      })
+  }
+
+  private validate(): Promise<boolean> {
+      let errors = [];
+      const data = this.props.data
+      if (data.seatedCapacity	 === 0 ) {
+          errors.push('Seated capacity is required')
+      }
+      if (data.standingCapacity	 === 0 ) {
+        errors.push('Standing capacity is required')
+      }
+
+      if (errors.length === 0) {
+          return Promise.resolve(true)
+      }
+      return Promise.reject(errors)
   }
   componentWillMount() {
     venue.listOptions().then(resp => {
@@ -134,7 +164,7 @@ class VenueDetailsSection extends Component<Props> {
     lunchPrice[key] = value
     updateState('lunchPrice', lunchPrice)
   }
-  
+
   updateStateDinner = ( key: MealPriceKeys, value: number) => {
     const { updateState, data: { dinnerPrice} } = this.props
     dinnerPrice[key] = value
@@ -336,7 +366,9 @@ class VenueDetailsSection extends Component<Props> {
             </Form.Item>
           </Row>
         }
-        
+        {this.state.errors.map(err => (
+            <Alert style={{marginBottom: 16}} key={err} message={err} type="error" />
+        ))}
         <Grid style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
           <Button type="primary" htmlType="submit">Next</Button>
         </Grid>
@@ -345,4 +377,4 @@ class VenueDetailsSection extends Component<Props> {
   }
 }
 
-export default VenueDetailsSection
+export default withRouter(VenueDetailsSection)

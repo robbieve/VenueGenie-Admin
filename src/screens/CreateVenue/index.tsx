@@ -64,6 +64,23 @@ interface State {
     informationState: VenueInformationState;
 }
 
+const infoStepTitles = {
+    INFO_STEP: 'In Progress',
+    AMENITIES_STEP: 'Finished',
+    VENUEDETAILS_STEP: 'Finished',
+}
+
+const amenityStepTitles = {
+    INFO_STEP: 'Waiting',
+    AMENITIES_STEP: 'In Progress',
+    VENUEDETAILS_STEP: 'Finished',
+}
+const detailsStepTitles = {
+    INFO_STEP: 'Waiting',
+    AMENITIES_STEP: 'Waiting',
+    VENUEDETAILS_STEP: 'In Progress',
+}
+
 class CreateVenue extends Component {
     state: State = {
         step: INFO_STEP,
@@ -77,7 +94,18 @@ class CreateVenue extends Component {
             informationState
         })
     }
-
+    displayTitles = (infoTitles: object, key_: string ): string => {
+        
+        Object.entries(infoTitles).forEach(entry => {
+            let key = entry[0];
+            let value = entry[1];
+            
+            if (key_ === key) {
+                return value
+            }
+          })
+        return ''
+    }
     private displaySteps() {
         switch (this.state.step) {
             case INFO_STEP:
@@ -108,13 +136,14 @@ class CreateVenue extends Component {
     }
 
     render() {
+        
         return (
             <Row gutter={16}>
                 <Col span="5">
                     <Steps direction="vertical" size="small" current={0}>
-                        <Step title="In Progress" description="Venue information." />
+                        <Step title={this.displayTitles(infoStepTitles, this.state.step)} description="Venue information." />
                         <Step title="Waiting" description="Venue amenities" />
-                        <Step title="Waiting" description="This is a description." />
+                        <Step title="Waiting" description="Venue details" />
                     </Steps>
                 </Col>
                 <Col span={this.state.step === INFO_STEP? "13" : "8"} style={{ background: 'white', padding: 16 }}>
