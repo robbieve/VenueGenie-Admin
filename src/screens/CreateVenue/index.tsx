@@ -3,13 +3,16 @@ import { Row, Col, Steps, Divider } from 'antd';
 
 import CreateVenueInformationSection from './_sections/CreateVenueInformationSection'
 import AddAmenitySection from './_sections/AddAmenitySection'
+import VenueDetailsSection from './_sections/VenueDetailsSection'
+
 import { VenueInformationState } from './interface';
 
 const Step = Steps.Step;
 
 const
     INFO_STEP = 'INFO_STEP',
-    AMENITIES_STEP = 'AMENITIES_STEP'
+    AMENITIES_STEP = 'AMENITIES_STEP',
+    VENUEDETAILS_STEP = 'VENUEDETAILS_STEP'
 
 const initialInformationState = {
     name: '',
@@ -29,8 +32,12 @@ const initialInformationState = {
     city: '',
     neighbourhood: '',
     fullAddress: '',
+    iGuideLink: '',
+    standingCapacity: 0,
+    seatedCapacity: 0,
+    minCapacity: 0,
+    rentalFee: 0,
 }
-
 
 interface State {
     step: string,
@@ -39,7 +46,7 @@ interface State {
 
 class CreateVenue extends Component {
     state: State = {
-        step: AMENITIES_STEP,
+        step: VENUEDETAILS_STEP,
         informationState: initialInformationState,
        
     }
@@ -67,6 +74,14 @@ class CreateVenue extends Component {
                         next={() => this.setState({step: AMENITIES_STEP})}
                     />
                 )
+            case VENUEDETAILS_STEP:
+            return (
+                <VenueDetailsSection 
+                    updateState={this.updateInfoState}
+                    next={() => this.setState({step: AMENITIES_STEP})}
+                    data={this.state.informationState}
+                />
+            )
         }
     }
 

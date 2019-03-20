@@ -16,4 +16,9 @@ export interface VenueInformationState {
     city: string;
     neighbourhood: string;
     fullAddress: string;
+    iGuideLink: string,
+    seatedCapacity: number,
+    standingCapacity: number,
+    minCapacity: number,
+    rentalFee: number,
 }
