@@ -25,7 +25,11 @@ const initialInformationState = {
     contactName: '',
     description: '',
     venueType: '',
-    eventType: '',
+    eventType: {
+        wedding: false,
+        corporate: false,
+        social: false
+    },
     googleReviewRating: 0,
     googleReviewQty: 0,
     address: '',
@@ -37,6 +41,22 @@ const initialInformationState = {
     seatedCapacity: 0,
     minCapacity: 0,
     rentalFee: 0,
+    lookFeels: [],
+    cuisineOptions: [],
+    foodDrinkOptions: [],
+    amenities: [],
+    images: [],
+    featuredImageUrl: '',
+    lunchPrice: {
+        buyout: 0,
+        perPerson: 0,
+    },
+    dinnerPrice: {
+        buyout: 0,
+        perPerson: 0,
+    },
+    dishes: [],
+    notes: ''
 }
 
 interface State {
@@ -46,7 +66,7 @@ interface State {
 
 class CreateVenue extends Component {
     state: State = {
-        step: VENUEDETAILS_STEP,
+        step: INFO_STEP,
         informationState: initialInformationState,
        
     }
@@ -71,17 +91,19 @@ class CreateVenue extends Component {
                 return (
                     <AddAmenitySection 
                         updateState={this.updateInfoState}
-                        next={() => this.setState({step: AMENITIES_STEP})}
+                        prev={() => this.setState({step: INFO_STEP})}
+                        next={() => this.setState({step: VENUEDETAILS_STEP})}
                     />
                 )
+            
             case VENUEDETAILS_STEP:
-            return (
-                <VenueDetailsSection 
-                    updateState={this.updateInfoState}
-                    next={() => this.setState({step: AMENITIES_STEP})}
-                    data={this.state.informationState}
-                />
-            )
+                return (
+                    <VenueDetailsSection 
+                        updateState={this.updateInfoState}
+                        prev={() => this.setState({step: AMENITIES_STEP})}
+                        data={this.state.informationState}
+                    />
+                )
         }
     }
 

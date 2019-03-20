@@ -1,7 +1,8 @@
 import React, { Component, FormEvent } from 'react';
-import { Form, Input, Select, Divider, Button, Alert, InputNumber } from 'antd';
-
+import { Form, Input, Select, Divider, Button, Alert, InputNumber, Row, Col, Switch } from 'antd';
+import Grid from 'antd/lib/card/Grid';
 import { VenueInformationState } from '../interface'
+import { EventType } from '../../../models/venue'
 import {venueTypeOptions, cityOptions} from '../../../data/select'
 
 import PlacesAutocomplete from 'react-places-autocomplete';
@@ -15,6 +16,7 @@ interface Props {
     updateState: Function;
     next: Function;
 }
+type eventType = keyof EventType
 
 class CreateVenueInformationSection extends Component<Props> {
     state: State = {
@@ -78,12 +80,19 @@ class CreateVenueInformationSection extends Component<Props> {
         }
         return Promise.reject(errors)
     }
-
-    handleSelect = (address: string) => {
+    handleChange = (value: any, name: string) => {
+        const { updateState } = this.props
+        updateState(name, value)
+    }
+    handleSelect = async (address: string) => {
+        await this.props.updateState('address', address.split(',')[0])
         this.props.updateState('fullAddress', address)
-        this.props.updateState('address', address.split(',')[0])
     };
-
+    onChangeSwitch = (checked: boolean, key: eventType) => {
+        const { data: { eventType }, updateState} = this.props
+        eventType[key] = checked
+        updateState('eventType', eventType)
+    }
     render() {
         const { data, updateState } = this.props
         return (
@@ -129,11 +138,35 @@ class CreateVenueInformationSection extends Component<Props> {
                         value={data.description}
                         onInput={(e: any) => updateState('description', e.target.value)} />
                 </Form.Item>
+                
+                <Form.Item label="Event Type">
+                    <Row style={{margin: '20px 10px'}}>
+                        <Col lg={{ span: 18, offset: 1 }}><span style={{fontSize: 16, fontWeight: 700}}>Social Event</span></Col>
+                        <Col lg={{ span: 3, offset: 1 }}>
+                        <Switch defaultChecked={false} onChange={(checked) => this.onChangeSwitch(checked, 'social')} />
+                        </Col>
+                    </Row>
+                    <Row style={{margin: '20px 10px'}}>
+                        <Col lg={{ span: 18, offset: 1 }}><span style={{fontSize: 16, fontWeight: 700}}>Wedding Event</span></Col>
+                        <Col lg={{ span: 3, offset: 1 }}>
+                        <Switch defaultChecked={false} onChange={(checked) => this.onChangeSwitch(checked, 'wedding')} />
+                        </Col>
+                    </Row>
+                    <Row style={{margin: '20px 10px'}}>
+                        <Col lg={{ span: 18, offset: 1 }}><span style={{fontSize: 16, fontWeight: 700}}>Corporate Event</span></Col>
+                        <Col lg={{ span: 3, offset: 1 }}>
+                        <Switch defaultChecked={false} onChange={(checked) => this.onChangeSwitch(checked, 'corporate')} />
+                        </Col>
+                    </Row>
+                </Form.Item>
+               
+                
                 <Form.Item label="Venue Type">
                     <Select
                         showSearch
                         placeholder="Select a venue type"
                         optionFilterProp="children"
+                        onChange={(value) => this.handleChange(value, 'venueType')}
                     >
                         {venueTypeOptions.map(opt => (
                             <Select.Option value={opt.value}>{opt.label}</Select.Option>
@@ -199,6 +232,7 @@ class CreateVenueInformationSection extends Component<Props> {
                         showSearch
                         placeholder="Select a City"
                         optionFilterProp="children"
+                        onChange={(value) => this.handleChange(value, 'city')}
                     >
                         {cityOptions.map(opt => (
                             <Select.Option value={opt.value}>{opt.label}</Select.Option>

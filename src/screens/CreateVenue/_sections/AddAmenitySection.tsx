@@ -1,6 +1,7 @@
 import React, { Component, FormEvent } from 'react';
 import { Form, Input, Select, Divider, Button, Alert, InputNumber, Row, Col, Switch, Icon } from 'antd';
 import { VenueOptionItem, VenueOptions } from '../../../models/venue'
+import { VenueInformationState } from '../interface'
 import Grid from 'antd/lib/card/Grid';
 import venue from '../../../services/venue'
 
@@ -22,6 +23,7 @@ type VenueOptionKeys = keyof VenueOptions
 interface Props {
   updateState: Function;
   next: Function;
+  prev: Function;
 }
 
 class AddAmenitySection extends Component<Props> {
@@ -49,12 +51,14 @@ class AddAmenitySection extends Component<Props> {
     this.props.next()
   }
   addItem = (checked: Boolean, id: String, key: StateKeys) => {
-   
+    const { updateState } = this.props
     if(key === 'amenities') {
       if (checked === true) {
         const item = this.state[key]
         this.setState({
           [key]: item.concat(id)
+        }, () => {
+          updateState(key, this.state[key])
         })
       }
     }
@@ -108,8 +112,8 @@ class AddAmenitySection extends Component<Props> {
         </Grid>
         <Divider />
         <Grid style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
-          <Button type="primary">Prev</Button>
-          <Button type="primary">Next</Button>
+          <Button type="primary" onClick={() => this.props.prev()}>Prev</Button>
+          <Button type="primary" onClick={() => this.props.next()}>Next</Button>
         </Grid>
       </Form>
     )

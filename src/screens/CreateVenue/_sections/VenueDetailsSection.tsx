@@ -1,10 +1,12 @@
 import React, { Component, FormEvent } from 'react';
 import Dropzone from 'react-dropzone'
 import { Form, Input, Select, Divider, Button, Alert, InputNumber, Row, Col, Switch, Icon, Upload, message } from 'antd';
-import { VenueOptionItem, VenueOptions } from '../../../models/venue'
+import { VenueOptionItem, VenueOptions, MealPrice } from '../../../models/venue'
 import { VenueInformationState } from '../interface'
 import Grid from 'antd/lib/card/Grid';
 import venue from '../../../services/venue'
+import vibeify from '../../../services/vibeify'
+
 const Dragger = Upload.Dragger;
 
 interface InputDataSource {
@@ -30,44 +32,12 @@ interface State {
 }
 type StateKeys = keyof State;
 type VenueOptionKeys = keyof VenueOptions
+type MealPriceKeys = keyof MealPrice
 interface Props {
   data: VenueInformationState;
   updateState: Function;
-  next: Function;
+  prev: Function;
 }
-
-const propsMul = {
-  name: 'file',
-  multiple: true,
-  action: '//jsonplaceholder.typicode.com/posts/',
-  onChange(info: any) {
-    const status = info.file.status;
-    if (status !== 'uploading') {
-      console.log(info.file, info.fileList);
-    }
-    if (status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully.`);
-    } else if (status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-};
-const props = {
-  name: 'file',
-  multiple: true,
-  action: '//jsonplaceholder.typicode.com/posts/',
-  onChange(info: any) {
-    const status = info.file.status;
-    if (status !== 'uploading') {
-      console.log(info.file, info.fileList);
-    }
-    if (status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully.`);
-    } else if (status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-};
 
 class VenueDetailsSection extends Component<Props> {
   state: State = {
@@ -102,6 +72,13 @@ class VenueDetailsSection extends Component<Props> {
       type: ''
     },
   }
+  private handleSubmit = (e: FormEvent) => {
+    const { data } = this.props
+    e.preventDefault()
+    venue.create(data).then( resp => {
+      console.log("------------", resp)
+    })
+  }
   componentWillMount() {
     venue.listOptions().then(resp => {
         const dataSource = resp.data
@@ -114,12 +91,14 @@ class VenueDetailsSection extends Component<Props> {
   }
 
   addItem = (checked: Boolean, id: String, key: StateKeys) => {
-   
+    const { updateState } = this.props
     if(key === 'lookFeels' || key === 'cuisineOptions' || key === 'foodDrinkOptions') {
       if (checked === true) {
         const item = this.state[key]
         this.setState({
           [key]: item.concat(id)
+        }, () => {
+          updateState(key, this.state[key])
         })
       }
     }
@@ -150,10 +129,60 @@ class VenueDetailsSection extends Component<Props> {
     })
   }
 
+  updateStateLunch = ( key: MealPriceKeys, value: number) => {
+    const { updateState, data: { lunchPrice } } = this.props
+    lunchPrice[key] = value
+    updateState('lunchPrice', lunchPrice)
+  }
+  
+  updateStateDinner = ( key: MealPriceKeys, value: number) => {
+    const { updateState, data: { dinnerPrice} } = this.props
+    dinnerPrice[key] = value
+    updateState('dinnerPrice', dinnerPrice)
+  }
+
   render() {
     const { data, updateState } = this.props
+    const { venueType } = data
+    // File Upload
+    const propsMulDish = {
+      name: 'file',
+      multiple: true,
+      beforeUpload: (file: File) => {
+        vibeify.upload(file).then(resp => {
+          const { dishes } = this.props.data
+          dishes.push({imgUrl: resp.data.url, name: ''})
+          updateState('dishes', dishes)
+        })
+        return false;
+      },
+    };
+
+    const propsMul = {
+      name: 'file',
+      multiple: true,
+      beforeUpload: (file: File) => {
+        vibeify.upload(file).then(resp => {
+          const { images } = this.props.data
+          images.push({url: resp.data.url})
+          updateState('images', images)
+        })
+        return false;
+      },
+    };
+    const props = {
+      name: 'file',
+      multiple: true,
+      beforeUpload: (file: File) => {
+        vibeify.upload(file).then(resp => {
+          updateState('featuredImageUrl', resp.data.url)
+        })
+        return false;
+      },
+    };
+
     return (
-      <Form>
+      <Form onSubmit={this.handleSubmit}>
         <Form.Item label="Upload Venue Pictures (Max. 5 megabytes per photo)">
           <Dragger {...propsMul}>
             <p className="ant-upload-text">Drag n Drop Files</p>
@@ -194,12 +223,50 @@ class VenueDetailsSection extends Component<Props> {
                 value={data.minCapacity}
                 onChange={(value: any) => updateState('minCapacity', value)} />
         </Form.Item>
-        <h3>Rental fee for venue</h3>
-        <Form.Item label="Rental Fees">
-            <InputNumber
-                value={data.rentalFee}
-                onChange={(value: any) => updateState('rentalFee', value)} />
-        </Form.Item>
+        {
+          (venueType !== 'supperclub' && venueType !== 'restaurant') &&
+          <Row>
+            <h3>Rental fee for venue</h3>
+            <Form.Item label="Rental Fees">
+                <InputNumber
+                    value={data.rentalFee}
+                    onChange={(value: any) => updateState('rentalFee', value)} />
+            </Form.Item>
+          </Row>
+        }
+        {
+          (venueType === 'supperclub' || venueType === 'restaurant' || venueType === 'hall') &&
+          <Row>
+            <Form.Item label="Lunch Prices">
+              <Row style={{display: 'flex', justifyContent: 'space-evenly'}}>
+                <Col lg={{ span: 12 }}>
+                  <InputNumber
+                    value={data.rentalFee}
+                    onChange={(value: any) => this.updateStateLunch('buyout', value)} />
+                </Col>
+                <Col lg={{ span: 12 }}>
+                  <InputNumber
+                    value={data.rentalFee}
+                    onChange={(value: any) => this.updateStateLunch( 'perPerson', value)} />
+                </Col>
+              </Row>
+            </Form.Item>
+            <Form.Item label="Dinner Prices">
+                <Row style={{display: 'flex', justifyContent: 'space-evenly'}}>
+                  <Col lg={{ span: 12 }}>
+                    <InputNumber
+                        value={data.rentalFee}
+                        onChange={(value: any) => this.updateStateDinner('buyout', value)} />
+                  </Col>
+                  <Col lg={{ span: 12 }}>
+                    <InputNumber
+                      value={data.rentalFee}
+                      onChange={(value: any) => this.updateStateDinner('perPerson', value)} />
+                  </Col>
+                </Row>
+            </Form.Item>
+          </Row>
+        }
         {
           this.state.lookFeelDummies.map((item) => (
               <Row key={item.id} style={{margin: '20px 10px'}}>
@@ -219,41 +286,60 @@ class VenueDetailsSection extends Component<Props> {
         </Grid>
         <Divider />
         {
-          this.state.cuisineOptionDummies.map((item) => (
-              <Row key={item.id} style={{margin: '20px 10px'}}>
-                <Col lg={{ span: 15, offset: 1 }}><span style={{fontSize: 16, fontWeight: 700}}>{item.name}</span></Col>
-                <Col lg={{ span: 3, offset: 1 }}>
-                  <Switch defaultChecked={false} onChange={(checked) => this.addItem(checked, item.id, 'cuisineOptions')} />
-                </Col>
-                <Col lg={{ span: 3, offset: 1 }}><Icon onClick={() => this.deleteDummyItem(item.id, 'cuisine_option', 'cuisineOptions', 'cuisineOptionDummies')} type="close" style={{fontSize: 16, color: 'red', cursor: 'pointer'}}/></Col>
-              </Row>
-          ))
-        }
-        <Divider />
-        <Grid style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
+          (venueType === 'restaurant' || venueType === 'supperclub' || venueType === 'hall') &&
+          <Row>
+            {
+              this.state.cuisineOptionDummies.map((item) => (
+                  <Row key={item.id} style={{margin: '20px 10px'}}>
+                    <Col lg={{ span: 15, offset: 1 }}><span style={{fontSize: 16, fontWeight: 700}}>{item.name}</span></Col>
+                    <Col lg={{ span: 3, offset: 1 }}>
+                      <Switch defaultChecked={false} onChange={(checked) => this.addItem(checked, item.id, 'cuisineOptions')} />
+                    </Col>
+                    <Col lg={{ span: 3, offset: 1 }}><Icon onClick={() => this.deleteDummyItem(item.id, 'cuisine_option', 'cuisineOptions', 'cuisineOptionDummies')} type="close" style={{fontSize: 16, color: 'red', cursor: 'pointer'}}/></Col>
+                  </Row>
+              ))
+            }
+            <Divider />
+            <Grid style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
             <Input
                 onInput={(e: any) => this.updateAddingDummy(e.target.value, 'addingLookFeel')} />
             <Button type="primary" style={{marginLeft: '20px'}} onClick={() => this.addDummyItem('cuisine_option', 'cuisineOptions', 'cuisineOptionDummies')}>Add Cuisine</Button>
         </Grid>
         <Divider />
-        {
-          this.state.foodDrinkOptionDummies.map((item) => (
-              <Row key={item.id} style={{margin: '20px 10px'}}>
-                <Col lg={{ span: 15, offset: 1 }}><span style={{fontSize: 16, fontWeight: 700}}>{item.name}</span></Col>
-                <Col lg={{ span: 3, offset: 1 }}>
-                  <Switch defaultChecked={false} onChange={(checked) => this.addItem(checked, item.id, 'foodDrinkOptions')} />
-                </Col>
-                <Col lg={{ span: 3, offset: 1 }}><Icon onClick={() => this.deleteDummyItem(item.id, 'food_drink_option', 'foodDrinkOptions', 'foodDrinkOptionDummies')} type="close" style={{fontSize: 16, color: 'red', cursor: 'pointer'}}/></Col>
-              </Row>
-          ))
+          </Row>
         }
-        <Divider />
+        {
+          (venueType !== 'event_space' && venueType !== 'loft') &&
+          <Row>
+            {
+              this.state.foodDrinkOptionDummies.map((item) => (
+                  <Row key={item.id} style={{margin: '20px 10px'}}>
+                    <Col lg={{ span: 15, offset: 1 }}><span style={{fontSize: 16, fontWeight: 700}}>{item.name}</span></Col>
+                    <Col lg={{ span: 3, offset: 1 }}>
+                      <Switch defaultChecked={false} onChange={(checked) => this.addItem(checked, item.id, 'foodDrinkOptions')} />
+                    </Col>
+                    <Col lg={{ span: 3, offset: 1 }}><Icon onClick={() => this.deleteDummyItem(item.id, 'food_drink_option', 'foodDrinkOptions', 'foodDrinkOptionDummies')} type="close" style={{fontSize: 16, color: 'red', cursor: 'pointer'}}/></Col>
+                  </Row>
+              ))
+            }
+            <Divider />
+            <Grid style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
+                <Input
+                    onInput={(e: any) => this.updateAddingDummy(e.target.value, 'addingLookFeel')} />
+                <Button type="primary" style={{marginLeft: '20px'}} onClick={() => this.addDummyItem('food_drink_option', 'foodDrinkOptions', 'foodDrinkOptionDummies')}>Add Food Drink</Button>
+            </Grid>
+            <Divider />
+            <Form.Item label="Dish Photos">
+              <Dragger {...propsMulDish}>
+                <p className="ant-upload-text">Drag n Drop Files</p>
+              </Dragger>
+            </Form.Item>
+          </Row>
+        }
+        
         <Grid style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
-            <Input
-                onInput={(e: any) => this.updateAddingDummy(e.target.value, 'addingLookFeel')} />
-            <Button type="primary" style={{marginLeft: '20px'}} onClick={() => this.addDummyItem('food_drink_option', 'foodDrinkOptions', 'foodDrinkOptionDummies')}>Add Food Drink</Button>
+          <Button type="primary" htmlType="submit">Next</Button>
         </Grid>
-        <Divider />
       </Form>
     )
   }

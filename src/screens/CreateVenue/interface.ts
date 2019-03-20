@@ -1,3 +1,4 @@
+import {EventType, VenueImage, MealPrice, VenueDish} from '../../models/venue'
 export interface VenueInformationState {
     name: string;
     listingName: string;
@@ -9,7 +10,6 @@ export interface VenueInformationState {
     contactName: string;
     description: string;
     venueType: string;
-    eventType: string;
     googleReviewRating: number;
     googleReviewQty: number;
     address: string;
@@ -21,4 +21,15 @@ export interface VenueInformationState {
     standingCapacity: number,
     minCapacity: number,
     rentalFee: number,
+    amenities: string[],
+    foodDrinkOptions: string[],
+    cuisineOptions: string[],
+    lookFeels: string[],
+    eventType: EventType,
+    images: VenueImage[],
+    featuredImageUrl: string,
+    lunchPrice: MealPrice,
+    dinnerPrice: MealPrice,
+    dishes: VenueDish[],
+    notes: string,
 }
